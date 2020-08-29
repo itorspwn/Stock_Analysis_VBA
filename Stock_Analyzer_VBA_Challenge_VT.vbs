@@ -22,24 +22,24 @@ Sub SM_Analyzer()
     Dim ticker_summary_row As Integer
     ticker_summary_row = 2
     
-    'Look through all ticker
-    For i = 2 To 70926
+  'Look through all ticker
+  For i = 2 To 70926
     
     'Define initial value of day close for ticker
-   If yearclose_first = 0 Then
-    yearclose_first = Cells(i, 6).Value
-    
-    End If
-    
+   If Cells(i - 1, 1).Value <> Cells(i, 1).Value And Cells(i + 1, 1).Value = Cells(i, 1).Value Then
+      yearclose_first = Cells(i, 3).Value
+      End If
+      
     'Define initial value for year change
-      If yearchange_value = 0 Then
-    yearchange_value = Cells(i, 10).Value
-    
-    End If
+  If yearchange_value = 0 Then
+      yearchange_value = Cells(i, 10).Value
+      End If
     
     
     'Check if ticker is still the same
-    If Cells(i + 1, 1).Value <> Cells(i, 1).Value And Cells(i - 1, 1) = Cells(i, 1) Then
+  If Cells(i + 1, 1).Value <> Cells(i, 1).Value And Cells(i - 1, 1) = Cells(i, 1) Then
+    
+    
     
     'Define last close per ticker
     yearclose_last = Cells(i, 6).Value
@@ -48,7 +48,7 @@ Sub SM_Analyzer()
     yearly_change = yearclose_last - yearclose_first
     
     'Percent Change
-    percent_change = yearchange_value / yearclose_first
+    percent_change = (yearclose_last - yearclose_first) / yearclose_first
     
     'Set ticker symbol
     ticker_sym = Cells(i, 1).Value
@@ -64,40 +64,32 @@ Sub SM_Analyzer()
         Range("J" & ticker_summary_row).Value = yearly_change
         'format conditional color (red if negative, else green)
         If Range("J" & ticker_summary_row).Value < 0 Then
-         Range("J" & ticker_summary_row).Interior.ColorIndex = 3
-         Else
+          Range("J" & ticker_summary_row).Interior.ColorIndex = 3
+          Else
           Range("J" & ticker_summary_row).Interior.ColorIndex = 4
-        End If
+          End If
         
-    'Add percent change to table
-        Range("K" & ticker_summary_row).Value = percent_change
+        'Add percent change to table
+          Range("K" & ticker_summary_row).Value = percent_change
         'format to percent
-        Range("K" & ticker_summary_row).NumberFormat = "0.00%"
+          Range("K" & ticker_summary_row).NumberFormat = "0.00%"
  
-    'Add total stock to table
-      Range("L" & ticker_summary_row).Value = total_stock
+        'Add total stock to table
+          Range("L" & ticker_summary_row).Value = total_stock
 
-    ' Add to ticker table
-      ticker_summary_row = ticker_summary_row + 1
+        ' Add to ticker table
+         ticker_summary_row = ticker_summary_row + 1
       
       ' Reset the total stock, the yearly change start, and the percent change
-      total_stock = 0
-      yearclose_first = 0
+        total_stock = 0
+        Else
 
-  
-    Else
-
-      ' Add to the stock total
+      'Add to the stock total
       total_stock = total_stock + Cells(i, 7).Value
-      
-    yearly_change = yearclose_last - yearclose_first
+      yearly_change = yearclose_last - yearclose_first
+      percent_change = yearchange_value / yearclose_first
 
     End If
-    
     Next i
-    
-    
-    
-    
     
 End Sub
